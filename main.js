@@ -4,9 +4,11 @@ function init() {
     const restartBtn = document.querySelector('#restart');
     const resetScoresBtn = document.querySelector('#reset')
     game = new TicTacToe(board);
+    updateActiveTurn();
+
     board.addEventListener('click', (event) => { 
-        document.querySelector('#announcer').innerHTML = "";
         game.nextMove(event); 
+        updateActiveTurn();
 
         if ( game.isGameOver() ){
             updateWins(); 
@@ -17,7 +19,7 @@ function init() {
     resetScoresBtn.addEventListener('click', (event) => { game.resetScores(); updateWins(); });
 
 }
-
+//initialize game
 init();
 
 function announceWinner(){
@@ -31,6 +33,10 @@ function announceWinner(){
 function updateWins(){
     document.querySelector('#x-wins').innerHTML = game.getWins('X');
     document.querySelector('#o-wins').innerHTML = game.getWins('O');
+}
+
+function updateActiveTurn(){
+    document.querySelector('#announcer').innerHTML = `${game.getActiveTurn()}'s Turn`;
 }
 
 
