@@ -1,9 +1,13 @@
-const board = document.querySelector('#board');
-game = new TicTacToe(board);
+function init() {
 
-board.addEventListener('click', (event) => {
+    const board = document.querySelector('#board');
+    game = new TicTacToe(board);
+    board.addEventListener('click', (event) => { game.nextMove(event); });
 
-    game.nextMove(event);
-    
-  });
+}
+
+init();
+
+
+
 

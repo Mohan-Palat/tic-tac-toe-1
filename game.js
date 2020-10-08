@@ -2,14 +2,13 @@ class TicTacToe {
     constructor(board){
         this.board = board;
         this.wipeBoard = this.board.innerHTML;
-        this.xWins = 0;
-        this.oWins = 0;
         this.move = 0;
         this.winner = null;
-        this.columns = [ ];
-        this.rows = [ ];
-        this.diags = [ ];
         this.clearWinningMoves();
+        this.wins = {
+            X: 0,
+            O: 0
+        }
 
     }
 
@@ -17,8 +16,11 @@ class TicTacToe {
 
         if ( this.isGameOver() ) 
             return this.restartGame();
-        
 
+        if ( event.target.innerHTML != ""){
+            return 0;
+        }
+        
         //Get out column and row index from div id 
         let col = parseInt(event.target.id[0]) -1; 
         let row = parseInt(event.target.id[2]) - 1;
@@ -48,6 +50,10 @@ class TicTacToe {
     }
 
     determineWinner(filledMoves){
+        if (this.move == 9){
+            console.log('Tie!');
+            return 'Tie'
+        }
 
         for ( let i = 0; i < filledMoves.length; i++){
             let winningPlayer = this.determineWinningPlayer(filledMoves[i]);
@@ -66,10 +72,10 @@ class TicTacToe {
         if ( filledLine.includes('X') && filledLine.includes('O') )
             return null;
         if  ( filledLine.includes('X') ){
-            this.xWins++;
+            this.wins.X++;
             return 'X';
         }
-        this.oWins++;
+        this.wins.O++;
         return 'O';
         
     }
@@ -91,17 +97,13 @@ class TicTacToe {
         return this.winner !== null || this.move === 9
     }
 
-    getOWins(){
-        return this.oWins;
-    }
-
-    getXWins(){
-        return this.xWins;
+    getWins(player){
+        return this.wins[player];
     }
 
     restartGame(){
         console.log(`New Game! Current Score: `);
-        console.log(`X: ${this.xWins}\nO: ${this.oWins}`);
+        console.log(`X: ${this.wins.X}\nO: ${this.wins.O}`);
         this.board.innerHTML = this.wipeBoard;
         this.clearWinningMoves();
         this.move = 0;
