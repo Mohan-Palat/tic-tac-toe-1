@@ -17,9 +17,8 @@ class TicTacToe {
         if ( this.isGameOver() ) 
             return this.restartGame();
 
-        if ( event.target.innerHTML != ""){
+        if ( event.target.innerHTML != "" ) 
             return 0;
-        }
         
         //Get out column and row index from div id 
         let col = parseInt(event.target.id[0]) -1; 
@@ -50,11 +49,7 @@ class TicTacToe {
     }
 
     determineWinner(filledMoves){
-        if (this.move == 9){
-            console.log('Tie!');
-            return 'Tie'
-        }
-
+        
         for ( let i = 0; i < filledMoves.length; i++){
             let winningPlayer = this.determineWinningPlayer(filledMoves[i]);
             if (winningPlayer !== null){
@@ -62,6 +57,12 @@ class TicTacToe {
                 return winningPlayer;
             }
         }
+
+        if (this.move == 9){
+            console.log('Tie!');
+            return 'Tie'
+        }
+
         return null;
     }
     
@@ -100,18 +101,29 @@ class TicTacToe {
     getWins(player){
         return this.wins[player];
     }
-
+    //reset active game tracking values to game start
     restartGame(){
         console.log(`New Game! Current Score: `);
         console.log(`X: ${this.wins.X}\nO: ${this.wins.O}`);
-        this.board.innerHTML = this.wipeBoard;
-        this.clearWinningMoves();
+        this.board.innerHTML = this.wipeBoard;                      //returns board to original empty state
+        this.clearWinningMoves();                                   //resets move tracking arrays
         this.move = 0;
         this.winner = null;
     }
 
     getActiveTurn(){
         return this.determineTurn(this.move + 1);
+    }
+
+    getWinner(){
+        return this.winner;
+    }
+
+    resetScores(){
+        this.wins = {
+            X: 0,
+            O: 0
+        }
     }
 
 
