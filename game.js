@@ -2,89 +2,106 @@ class TicTacToe {
 
     constructor(board){
         this.board = board;
-        this.wipeBoard = this.board.innerHTML;
+        this.startingBoard = this.board.innerHTML;
         this.initializeVariables();
         this.wins = {
             X: 0,
             O: 0
         }
+        this.save = localStorage.getItem('save');
+        if ( this.save != null ){
+            this.restoreSaveState(this.save);
+        }
+
     }
 
     initializeVariables(){             //sets all game variables to beginning position
-        this.move = 1;
+        this.moveCount = 1;
         this.winner = null;
-        this.initializeWinningMoves();
+        this.initializeWinStates();
     }
     
-    initializeWinningMoves(){          //initialize arrays that track every possible winning combination of moves
+    initializeWinStates(){          //initialize arrays that track every possible winning combination of moves
         this.columns = [ [ '*', '*', '*'], [ '*', '*', '*'], ['*', '*', '*' ] ];
         this.rows = [ [ '*', '*', '*'], [ '*', '*', '*'], [ '*', '*', '*'] ];
         this.diags = [ ];
     }
+
+    restoreSaveState(save){
+        let saveState = JSON.parse(save);
+        this.board.innerHTML = saveState.board;
+        this.moveCount = saveState.moveCount;
+        this.winner = saveState.winner;
+        this.columns = saveState.columns;
+        this.rows = saveState.rows;
+        this.diags = saveState.diags;
+        this.wins = saveState.wins;
+
+    }
+
+    click(event){
+        if ( this.isGameOver() ) 
+            this.restartGame();
+
+        if ( event.target.innerHTML != "" )                             //prevents a game space from being selected twice
+            return 0;
+
+        if ( !this.isGameOver() ) 
+            this.nextMove(event);
+
+        this.saveGame();
+
+    }
+
     //main driver of game logic. takes in target game space and updates it for current player, then determines if move has led to a winning game state.
     nextMove(event){
-
-        if ( this.isGameOver() ) 
-            return this.restartGame();
-
-        //prevents a game space from being selected twice
-        if ( event.target.innerHTML != "" )     
-            return 0;
-        
-        //Get event target's column and row index from div id 
-        let col = parseInt(event.target.id[0]); 
+        let col = parseInt(event.target.id[0]);                             //Get event target's column and row index from div id 
         let row = parseInt(event.target.id[2]);
-        //determine if turn is X or O and increments our move count
-        let turn = this.determineTurn(this.move++);
+        
+        let player = this.getTurn();                                          //determine if turn is X or O and increment our move count
+        this.moveCount++
 
-        //apply X or O to selected space
-        event.target.innerHTML = turn;
+        event.target.innerHTML = player;                                      //apply X or O to selected space
 
-        //update arrays tracking win moves for the selected game space
-        this.updateMoves(col, row, turn);
+        this.updateMoves(col, row, player);                                   //update arrays tracking win moves for the selected game space
 
-        //fill array with updated arrays tracking moves
-        let filledMoves = [ this.columns[col], this.rows[row], this.diags[0], this.diags[1] ];
-        //determine if a winner exists from these 
-        this.winner = this.determineWinner(filledMoves);
+        let latestMove = [ this.columns[col], this.rows[row], this.diags[0], this.diags[1] ];           //fill array with updated arrays tracking moves
+        this.winner = this.determineWinner(latestMove);                                                 //determine if a winner exists from these 
 
     }
 
-    determineTurn(move){
-        if (move % 2 == 1)
+    getTurn(){
+        if (this.moveCount % 2 == 1)
             return 'X'
         return 'O';
-        
     }
 
-    determineWinner(filledMoves){
+    determineWinner(latestMove){
         //search through every array updated this turn to see if one is a winner (i.e. three indices of X or O)
-        for ( let i = 0; i < filledMoves.length; i++){
-            let winningPlayer = this.determineWinningPlayer(filledMoves[i]);
+        for ( let i = 0; i < latestMove.length; i++){
+            let winningPlayer = this.determineWinnerHelper(latestMove[i]);
             if (winningPlayer !== null)
                 return winningPlayer;
         }
-        if (this.move == 9)                 //if every game space is filled and no winner is declared, game is a tie
+        if (this.moveCount == 10)                 //if every game space is filled and no winner is declared, game is a tie
             return 'Tie'
-        return null;                        //no winner, return null and continue game
+        return null;                              //no winner, return null and continue game
     }
     
-    determineWinningPlayer(filledLine){
-        if (filledLine.includes('*'))                                       //if passed array isn't full (still contains *'s), no winner
+    determineWinnerHelper(winState){
+        if (winState.includes('*'))                                       //if passed array isn't full (still contains *'s), not a winner
             return null;
-        if ( filledLine.includes('X') && filledLine.includes('O') )         //if passed array is complete but contains both X's and O's, no winner
+        if ( winState.includes('X') && winState.includes('O') )         //if passed array is complete but contains both X's and O's, not a winner
             return null;
 
-        let winningPlayer = filledLine[0];                                 
+        let winningPlayer = winState[0];                                 
         this.wins[winningPlayer]++;
         return winningPlayer;                                               //return player from winning array
-  
-        
     }
     
-    updateMoves(col, row, turn){
-        this.columns[col][row] = turn;
-        this.rows[row][col] = turn;
+    updateMoves(col, row, player){
+        this.columns[col][row] = player;
+        this.rows[row][col] = player;
         this.diags = this.updateDiags();
     }
 
@@ -93,18 +110,12 @@ class TicTacToe {
     // diags[1] = bottom left to top right
     updateDiags(){ return [ [ this.columns[0][0], this.columns[1][1], this.columns[2][2]  ], [ this.columns[2][0], this.columns[1][1], this.columns[0][2] ] ]; }   
 
-    isGameOver(){ return this.winner !== null || this.move === 9 }     //if a winner has been determined or game has reached 9 moves, game is over
+    isGameOver(){ return this.winner !== null || this.moveCount === 10 }     //if a winner has been determined or game has reached 9 moves, game is over
 
     getWins(player){ return this.wins[player]; }   //return count of wins for a given player
 
     //reset active game tracking values to game start
-    restartGame(){
-        this.board.innerHTML = this.wipeBoard;             //returns board to original empty state
-        this.initializeVariables();                                      
-        
-    }
-
-    getActiveTurn(){ return this.determineTurn(this.move); }  //returns the player who is currently taking their turn
+    restartGame(){ this.board.innerHTML = this.startingBoard; this.initializeVariables(); this.saveGame();}        //returns game to starting state
 
     getWinner(){ return this.winner; }
 
@@ -113,6 +124,21 @@ class TicTacToe {
             X: 0,
             O: 0
         }
+        this.saveGame();
+    }
+
+    saveGame(){
+        this.localSave = {
+            board: this.board.innerHTML,
+            moveCount: this.moveCount,
+            winner: this.winner,
+            columns: this.columns,
+            rows: this.rows,
+            diags: this.diags,
+            wins: this.wins
+        }
+
+        localStorage.setItem('save', JSON.stringify(this.localSave));
     }
 
 };

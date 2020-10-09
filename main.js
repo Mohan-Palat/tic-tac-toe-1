@@ -5,9 +5,10 @@ function init() {
     const resetScoresBtn = document.querySelector('#reset')
     game = new TicTacToe(board);
     updateActiveTurn();
+    updateWins();
 
     board.addEventListener('click', (event) => { 
-        game.nextMove(event); 
+        game.click(event); 
         updateActiveTurn();
 
         if ( game.isGameOver() ){
@@ -36,7 +37,6 @@ function updateWins(){
 }
 
 function updateActiveTurn(){
-    document.querySelector('#announcer').innerHTML = `${game.getActiveTurn()}'s Turn`;
+    document.querySelector('#announcer').innerHTML = `${game.getTurn()}'s Turn`;
 }
-
 
