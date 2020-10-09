@@ -1,19 +1,14 @@
 class TicTacToe {
 
     constructor(board){
-        this.board = board
-        this.vars = {
-            currentBoard: board.innerHTML,
-            startingBoard: board.innerHTML,
-            moveCount: 1,
-            winner: null,
-            winStates: this.initializeWinStates(),
-            wins: {
-                X: 0,
-                O: 0
-            }
+        this.board = board;
+        this.startingBoard = this.board.innerHTML;
+        this.initializeVariables();
+        this.wins = {
+            X: 0,
+            O: 0
         }
-        this.save = localStorage.getItem('save');                   //restore game session upon refresh
+        this.save = localStorage.getItem('save');
         if ( this.save != null ){
             this.restoreSaveState(this.save);
         }
@@ -21,37 +16,40 @@ class TicTacToe {
     }
 
     initializeVariables(){             //sets all game variables to beginning position
-        this.vars.moveCount = 1;
-        this.vars.winner = null;
-        this.vars.winStates = this.initializeWinStates();
+        this.moveCount = 1;
+        this.winner = null;
+        this.initializeWinStates();
     }
     
     initializeWinStates(){          //initialize arrays that track every possible winning combination of moves
-        return {
-            columns: [ [ '*', '*', '*'], [ '*', '*', '*'], ['*', '*', '*' ] ],
-            rows: [ [ '*', '*', '*'], [ '*', '*', '*'], [ '*', '*', '*'] ],
-            diags: [ ]
-        }
-       
+        this.columns = [ [ '*', '*', '*'], [ '*', '*', '*'], ['*', '*', '*' ] ];
+        this.rows = [ [ '*', '*', '*'], [ '*', '*', '*'], [ '*', '*', '*'] ];
+        this.diags = [ ];
     }
 
     restoreSaveState(save){
         let saveState = JSON.parse(save);
-        this.vars = saveState;
-        this.board.innerHTML = this.vars.currentBoard;
+        this.board.innerHTML = saveState.board;
+        this.moveCount = saveState.moveCount;
+        this.winner = saveState.winner;
+        this.columns = saveState.columns;
+        this.rows = saveState.rows;
+        this.diags = saveState.diags;
+        this.wins = saveState.wins;
 
     }
 
     click(event){
-        
         if ( this.isGameOver() ) 
-            return this.restartGame();
+            this.restartGame();
 
         if ( event.target.innerHTML != "" )                             //prevents a game space from being selected twice
             return 0;
 
-        return this.nextMove(event);
+        if ( !this.isGameOver() ) 
+            this.nextMove(event);
 
+        this.saveGame();
 
     }
 
@@ -61,19 +59,19 @@ class TicTacToe {
         let row = parseInt(event.target.id[2]);
         
         let player = this.getTurn();                                          //determine if turn is X or O and increment our move count
-        this.vars.moveCount++
+        this.moveCount++
 
         event.target.innerHTML = player;                                      //apply X or O to selected space
 
         this.updateMoves(col, row, player);                                   //update arrays tracking win moves for the selected game space
 
-        let latestMove = [ this.vars.winStates.columns[col], this.vars.winStates.rows[row], 
-                           this.vars.winStates.diags[0], this.vars.winStates.diags[1] ];           //fill array with updated arrays tracking moves
-        this.vars.winner = this.determineWinner(latestMove);                                            //determine if a winner exists from these 
+        let latestMove = [ this.columns[col], this.rows[row], this.diags[0], this.diags[1] ];           //fill array with updated arrays tracking moves
+        this.winner = this.determineWinner(latestMove);                                                 //determine if a winner exists from these 
+
     }
 
     getTurn(){
-        if (this.vars.moveCount % 2 == 1)
+        if (this.moveCount % 2 == 1)
             return 'X'
         return 'O';
     }
@@ -85,7 +83,7 @@ class TicTacToe {
             if (winningPlayer !== null)
                 return winningPlayer;
         }
-        if (this.vars.moveCount == 10)                 //if every game space is filled and no winner is declared, game is a tie
+        if (this.moveCount == 10)                 //if every game space is filled and no winner is declared, game is a tie
             return 'Tie'
         return null;                              //no winner, return null and continue game
     }
@@ -97,40 +95,50 @@ class TicTacToe {
             return null;
 
         let winningPlayer = winState[0];                                 
-        this.vars.wins[winningPlayer]++;
+        this.wins[winningPlayer]++;
         return winningPlayer;                                               //return player from winning array
     }
     
     updateMoves(col, row, player){
-        this.vars.winStates.columns[col][row] = player;
-        this.vars.winStates.rows[row][col] = player;
-        this.vars.winStates.diags = this.updateDiags();
+        this.columns[col][row] = player;
+        this.rows[row][col] = player;
+        this.diags = this.updateDiags();
     }
 
     // sets diag arrays to equal:
     // diags[0] = top left to bottom right 
     // diags[1] = bottom left to top right
-    updateDiags(){ return [ [ this.vars.winStates.columns[0][0], this.vars.winStates.columns[1][1], this.vars.winStates.columns[2][2]  ], [ this.vars.winStates.columns[2][0], this.vars.winStates.columns[1][1], this.vars.winStates.columns[0][2] ] ]; }   
+    updateDiags(){ return [ [ this.columns[0][0], this.columns[1][1], this.columns[2][2]  ], [ this.columns[2][0], this.columns[1][1], this.columns[0][2] ] ]; }   
 
-    isGameOver(){ return this.vars.winner !== null || this.vars.moveCount === 10 }     //if a winner has been determined or game has reached 9 moves, game is over
+    isGameOver(){ return this.winner !== null || this.moveCount === 10 }     //if a winner has been determined or game has reached 9 moves, game is over
 
-    getWins(player){ return this.vars.wins[player]; }   //return count of wins for a given player
+    getWins(player){ return this.wins[player]; }   //return count of wins for a given player
 
     //reset active game tracking values to game start
-    restartGame(){ this.board.innerHTML = this.vars.startingBoard; this.initializeVariables();}        //returns game to starting state
+    restartGame(){ this.board.innerHTML = this.startingBoard; this.initializeVariables(); this.saveGame();}        //returns game to starting state
 
-    getWinner(){ return this.vars.winner; }
+    getWinner(){ return this.winner; }
 
     resetScores(){
-        this.vars.wins = {
+        this.wins = {
             X: 0,
             O: 0
         }
+        this.saveGame();
     }
 
     saveGame(){
-        this.vars.currentBoard = this.board.innerHTML;
-        localStorage.setItem('save', JSON.stringify(this.vars));
+        this.localSave = {
+            board: this.board.innerHTML,
+            moveCount: this.moveCount,
+            winner: this.winner,
+            columns: this.columns,
+            rows: this.rows,
+            diags: this.diags,
+            wins: this.wins
+        }
+
+        localStorage.setItem('save', JSON.stringify(this.localSave));
     }
 
 };
