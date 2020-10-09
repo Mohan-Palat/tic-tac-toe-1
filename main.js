@@ -15,9 +15,10 @@ function init() {
             updateWins(); 
             announceWinner()
         }
+        game.saveGame();
     });
-    restartBtn.addEventListener('click', (event) => { game.restartGame() });
-    resetScoresBtn.addEventListener('click', (event) => { game.resetScores(); updateWins(); });
+    restartBtn.addEventListener('click', (event) => { game.restartGame(); game.saveGame(); });
+    resetScoresBtn.addEventListener('click', (event) => { game.resetScores(); updateWins(); game.saveGame(); });
 
 }
 //initialize game
