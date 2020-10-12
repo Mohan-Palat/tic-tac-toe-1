@@ -1,19 +1,102 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+    margin: 0 auto;
+}
+
+nav { 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+   
+   
+}
+
+
+main {
+    background: #F3EEE6;
+    display: flex;
+    justify-content: space-around;
+    flex-grow: 1;
+}
+
+footer {
+    background: #514663;
+    color: #F3EEE6;
+    text-align: center;
+    line-height: 60px;
+    font-family: 'Nunito', sans-serif;
+    
+}
+
+header {
+    background-color: #EF767A;
+    color: #EF767A;
+    line-height: 10px;
+}
+
+nav, section, aside {
+      
+    background-color: #F3EEE6;
+    color: #000000;
+    border-radius: 5px;
+    margin: 20px;
+    text-align: center;
+}
+   
+nav {
+
+    flex-grow: 1;
+    /* border: 5px solid black; */
+}
+
+
+section {
+    flex-basis: 300px;
+    /* border: 5px solid black; */
+    display: flex;
+    flex-direction: column;
+    align-items: space-around;
+}
+
+
+
+aside {
+    flex-grow: 1;
+    flex-shrink: 5;
+    /* border: 5px solid black; */
+}
+
+
 #board {
     display: grid;
+    background-color: lightgoldenrodyellow;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 3px;
     grid-auto-rows: 1fr; 
     grid-auto-columns: 1fr;
     align-items: center;
+    border-radius: 3%;
+    padding: 10px;
 }
 
-#board > div{
-    background-color: gray;
-    padding: 1em;
-    height: 50px;
+.space {
+    height: 100px;
+    width: 100px;
     text-align: center;
+    color: rgba(0,0,0,0);
+    border-radius: 5%;
 
+}
 
+.empty{
+    background-color: rgba(224, 206, 165, 0.527);
+}
+
+.empty:hover{
+    background-color: green;
 }
 
 button {
@@ -25,15 +108,75 @@ h1 {
     text-align: center;
 }
 
-body {
-    display: flex;
-    flex-direction: column;
-    align-items: space-around;
-}
-
 .scoreboard {
     text-align: center;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+}
+
+.X-space {
+    background-color: red;
+    height: 100px;
+    width: 100px;
+    text-align: center;
+}
+
+.O-space {
+    background-color: blue;
+    height: 100px;
+    width: 100px;
+    text-align: center;
+}
+
+
+
+@media screen and (max-width: 800px){
+
+    
+    main {
+        flex-direction: column;
+    }
+
+    section {
+        margin-top: 0px;
+        text-align: center;
+    }
+
+    nav, section, aside {
+        margin: 5px;
+        
+    }
+
+
+
+    #project_showcase {
+        flex-direction: column;
+    }
+
+    .project, h3 {
+        font-size: 20px;
+    }
+
+    #description {
+        max-width: 700px;
+        text-align: center;
+        line-height: 15px;
+    }
+
+    #proj_header > h3 {
+        font-size: 30px;
+        line-height: 10px;
+    }
+
+    #proj_header > p {
+        padding-bottom: 30px;
+        font-size: 20px;
+    }
+
+    #index_section {
+        max-height: 380px;
+    }
+
+   
 }

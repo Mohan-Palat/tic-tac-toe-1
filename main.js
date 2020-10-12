@@ -15,13 +15,26 @@ function init() {
             updateWins(); 
             announceWinner()
         }
+       //game.saveGame();
     });
-    restartBtn.addEventListener('click', (event) => { game.restartGame() });
-    resetScoresBtn.addEventListener('click', (event) => { game.resetScores(); updateWins(); });
+    //board.addEventListener('mouseover', (event) => { game.highlight(event);});
+    restartBtn.addEventListener('click', (event) => { game.restartGame(); /*game.saveGame();*/ });
+    resetScoresBtn.addEventListener('click', (event) => { game.resetScores(); updateWins(); /*game.saveGame();*/ });
 
 }
 //initialize game
 init();
+
+var sheet = document.styleSheets[0];
+
+//sheet.cssRules[11].style.backgroundColor = 'rgba(0, 0, 255, 0.3)' );
+
+
+
+
+
+
+
 
 function announceWinner(){
     msg = `${game.getWinner()} wins!`;

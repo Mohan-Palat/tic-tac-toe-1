@@ -1,22 +1,25 @@
 class TicTacToe {
 
     constructor(board){
-        this.board = board
+        this.board = board;
+        this.startingBoard = board.innerHTML;
         this.vars = {
             currentBoard: board.innerHTML,
-            startingBoard: board.innerHTML,
             moveCount: 1,
             winner: null,
             winStates: this.initializeWinStates(),
             wins: {
                 X: 0,
                 O: 0
-            }
+            },
+            lastHighlight: null
+
         }
         this.save = localStorage.getItem('save');                   //restore game session upon refresh
         if ( this.save != null ){
             this.restoreSaveState(this.save);
         }
+        this.toggleHover();
 
     }
 
@@ -60,16 +63,18 @@ class TicTacToe {
         let col = parseInt(event.target.id[0]);                             //Get event target's column and row index from div id 
         let row = parseInt(event.target.id[2]);
         
-        let player = this.getTurn();                                          //determine if turn is X or O and increment our move count
-        this.vars.moveCount++
+        let player = this.getTurn();                                          //determine if turn is X or O
 
         event.target.innerHTML = player;                                      //apply X or O to selected space
+        event.target.setAttribute('class', `space ${player}-space`)
 
         this.updateMoves(col, row, player);                                   //update arrays tracking win moves for the selected game space
 
         let latestMove = [ this.vars.winStates.columns[col], this.vars.winStates.rows[row], 
                            this.vars.winStates.diags[0], this.vars.winStates.diags[1] ];           //fill array with updated arrays tracking moves
         this.vars.winner = this.determineWinner(latestMove);                                            //determine if a winner exists from these 
+        this.vars.moveCount++;
+        this.toggleHover();
     }
 
     getTurn(){
@@ -85,7 +90,7 @@ class TicTacToe {
             if (winningPlayer !== null)
                 return winningPlayer;
         }
-        if (this.vars.moveCount == 10)                 //if every game space is filled and no winner is declared, game is a tie
+        if (this.vars.moveCount == 9)                 //if every game space is filled and no winner is declared, game is a tie
             return 'Tie'
         return null;                              //no winner, return null and continue game
     }
@@ -117,7 +122,7 @@ class TicTacToe {
     getWins(player){ return this.vars.wins[player]; }                                           //return count of wins for a given player
 
     //reset active game tracking values to game start
-    restartGame(){ this.board.innerHTML = this.vars.startingBoard; this.initializeVariables();}        //returns game to starting state
+    restartGame(){ this.board.innerHTML = this.startingBoard; this.initializeVariables();}        //returns game to starting state
 
     getWinner(){ return this.vars.winner; }
 
@@ -132,5 +137,24 @@ class TicTacToe {
         this.vars.currentBoard = this.board.innerHTML;
         localStorage.setItem('save', JSON.stringify(this.vars));
     }
+
+    getHoverIndex(sheet){
+        for (let i = 0; i < sheet.cssRules.length; i++){
+            if ( sheet.cssRules[i].selectorText == '.empty:hover')
+                return i;
+        }
+        return null;
+    }
+
+    toggleHover(){
+        const sheet = document.styleSheets[0];
+        let index = this.getHoverIndex(sheet);
+        let turn = this.getTurn();
+        if (turn == 'X')
+            return sheet.cssRules[index].style.backgroundColor = 'rgba(255, 0, 0, 0.3)' ;
+        return sheet.cssRules[index].style.backgroundColor = 'rgba(0, 0, 255, 0.3)' ;
+    }
+
+
 
 };
