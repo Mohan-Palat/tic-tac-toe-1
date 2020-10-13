@@ -13,8 +13,6 @@ function init() {
     const restartSound = new sound("./sounds/restart.mp3");
     const resetSound = new sound("./sounds/reset-scores.mp3");
 
-
-
     updateActiveTurn();
     updateWins();
 
@@ -41,7 +39,7 @@ function init() {
         }
        game.saveGame();
     });
-    restartBtn.addEventListener('click', (event) => { game.restartGame(); game.saveGame(); restartSound.play(); });
+    restartBtn.addEventListener('click', (event) => { game.restartGame(); game.saveGame(); restartSound.play(); updateActiveTurn(); });
     resetScoresBtn.addEventListener('click', (event) => { game.resetScores(); updateWins(); game.saveGame(); resetSound.play() });
 
 }
