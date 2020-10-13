@@ -3,6 +3,7 @@ function init() {
     const board = document.querySelector('#board');
     const restartBtn = document.querySelector('#restart');
     const resetScoresBtn = document.querySelector('#reset')
+    const buttons = document.querySelector('.buttons');
     const debug = document.querySelector('footer');
     game = new TicTacToe(board);
     let scoreToggle;
@@ -13,12 +14,12 @@ function init() {
     const tieSound = new sound("./sounds/tie.mp3");
     const restartSound = new sound("./sounds/restart.mp3");
     const resetSound = new sound("./sounds/reset-scores.mp3");
-
+    
     updateActiveTurn();
     updateWins();
 
     board.addEventListener('click', (event) => { 
-        endToggle(scoreToggle);
+        endAnnounceWinner(scoreToggle);
 
         let click = game.click(event); 
         if (click !== 0){
@@ -40,8 +41,11 @@ function init() {
         }
        game.saveGame();
     });
-    restartBtn.addEventListener('click', (event) => { game.restartGame(); game.saveGame(); restartSound.play(); updateActiveTurn(); });
-    resetScoresBtn.addEventListener('click', (event) => { game.resetScores(); updateWins(); game.saveGame(); resetSound.play() });
+
+    buttons.addEventListener('click', (event) => {
+        if (event.target.id == 'restart') { game.restartGame(); game.saveGame(); restartSound.play(); updateActiveTurn(); }
+        if (event.target.id == 'reset') { game.resetScores(); updateWins(); game.saveGame(); resetSound.play() }
+    });
     debug.addEventListener('click', debugSave);
 
 }
@@ -49,13 +53,13 @@ function init() {
 init();
 let debugCount = 0;
 
+
 function announceWinner(){
-    let node;
     resetTurnFocus();
     if (game.getWinner() === 'Tie')
         return 0;
-    node = document.querySelector(`.${game.getWinner()}`)
 
+    let node = document.querySelector(`.${game.getWinner()}`);
     return setInterval( function(){
         toggle(node, game.getWinner());
     }, 700)
@@ -77,15 +81,12 @@ function updateWins(){
 }
 
 function updateActiveTurn(){
-
     resetTurnFocus();
     let node = document.querySelector(`.${game.getTurn()}`);
-
     node.id = "turn";
-    
 }
 
-function endToggle(scoreToggle){
+function endAnnounceWinner(scoreToggle){
     clearInterval(scoreToggle);
     let scoreboard = document.querySelector('.scoreboard');
     scoreboard.childNodes[1].setAttribute('class', 'score X');
@@ -93,7 +94,7 @@ function endToggle(scoreToggle){
     
 }
 
-function resetTurnFocus(){
+function resetTurnFocus(){                                          //removes id from scoreboard elements highlighting active player
     let scoreboard = document.querySelector('.scoreboard');
     scoreboard.childNodes[1].id = "";
     scoreboard.childNodes[3].id = "";
