@@ -11,14 +11,9 @@ class TicTacToe {
             wins: {
                 X: 0,
                 O: 0
-            },
-            lastHighlight: null
-
+            }
         }
-        this.save = localStorage.getItem('save');                   //restore game session upon refresh
-        if ( this.save != null ){
-            this.restoreSaveState(this.save);
-        }
+        this.restoreSaveState();
         this.toggleHover();
 
     }
@@ -38,10 +33,12 @@ class TicTacToe {
        
     }
 
-    restoreSaveState(save){
-        let saveState = JSON.parse(save);
-        this.vars = saveState;
-        this.board.innerHTML = this.vars.currentBoard;
+    restoreSaveState(){                                                             //restore game session upon refresh
+        let savedVars = localStorage.getItem('save');                   
+        if ( savedVars != null ){
+            this.vars = JSON.parse(savedVars);
+            this.board.innerHTML = this.vars.currentBoard;
+        }
 
     }
 
@@ -122,7 +119,7 @@ class TicTacToe {
     getWins(player){ return this.vars.wins[player]; }                                           //return count of wins for a given player
 
     //reset active game tracking values to game start
-    restartGame(){ this.board.innerHTML = this.startingBoard; this.initializeVariables();}        //returns game to starting state
+    restartGame(){ this.board.innerHTML = this.startingBoard; this.initializeVariables(); this.toggleHover();}        //returns game to starting state
 
     getWinner(){ return this.vars.winner; }
 
@@ -145,11 +142,14 @@ class TicTacToe {
         }
         return null;
     }
-
+    //sets cursor hover to the color of the active turn
     toggleHover(){
         const sheet = document.styleSheets[0];
         let index = this.getHoverIndex(sheet);
         let turn = this.getTurn();
+        if ( this.isGameOver() ){
+            return sheet.cssRules[index].style.backgroundColor = 'rgba(224, 206, 165, 0.8)';                //if game over, disable hover
+        }
         if (turn == 'X')
             return sheet.cssRules[index].style.backgroundColor = 'rgba(255, 0, 0, 0.3)' ;
         return sheet.cssRules[index].style.backgroundColor = 'rgba(0, 0, 255, 0.3)' ;
