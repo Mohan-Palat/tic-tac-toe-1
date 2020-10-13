@@ -3,6 +3,7 @@ function init() {
     const board = document.querySelector('#board');
     const restartBtn = document.querySelector('#restart');
     const resetScoresBtn = document.querySelector('#reset')
+    const debug = document.querySelector('footer');
     game = new TicTacToe(board);
     let scoreToggle;
     const xMoveSound = new sound("./sounds/x-move.mp3");
@@ -41,10 +42,12 @@ function init() {
     });
     restartBtn.addEventListener('click', (event) => { game.restartGame(); game.saveGame(); restartSound.play(); updateActiveTurn(); });
     resetScoresBtn.addEventListener('click', (event) => { game.resetScores(); updateWins(); game.saveGame(); resetSound.play() });
+    debug.addEventListener('click', debugSave);
 
 }
 //initialize game
 init();
+let debugCount = 0;
 
 function announceWinner(){
     let node;
@@ -109,5 +112,15 @@ function sound(src) {
     }
     this.stop = function(){
       this.sound.pause();
+    }
+  }
+
+  function debugSave(){
+    debugCount++;
+
+    if (debugCount == 5){
+        localStorage.removeItem('save');
+        debugCount = 0;
+        alert('DEBUG: Reset local storage');
     }
   }

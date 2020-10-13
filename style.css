@@ -93,7 +93,7 @@ aside {
 }
 
 #turn {
-    box-shadow: 0px 0px 0px 2px black;
+    box-shadow: 0px 0px 0px 3px black;
     text-decoration: underline;
 }
 
@@ -195,13 +195,51 @@ h1 {
     box-shadow: 0px 0px 0px 1px black;
 }
 
+.mobile {
+    display: none;
+}
 
-@media screen and (max-width: 800px){
+footer > a{
+    color: #F3EEE6;
+}
+
+
+@media screen and (max-width: 600px){
     #turn {
         box-shadow: 0px 0px 0px 4px black;
         text-decoration: underline;
     }
 
+    .desktop{
+        display: none;
+    }
+
+    .mobile{
+        display: inline;
+    }
+
+    .buttons {
+
+        justify-content: space-around;
+        margin-right: 0;
+
+    }
+
+    .buttons > div {
+        font-size: 18px;
+        margin: 5px;
+        padding: 5px;
+        width: 100px;
+        border-radius: 5%;
+        text-align: center;
+    }
+
+    .score {
+        width: 80px;
+        font-size: 25px;
+    }
+
+    
 
    
 }
