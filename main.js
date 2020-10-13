@@ -4,44 +4,50 @@ function init() {
     const restartBtn = document.querySelector('#restart');
     const resetScoresBtn = document.querySelector('#reset')
     game = new TicTacToe(board);
+    let scoreToggle;
     updateActiveTurn();
     updateWins();
 
     board.addEventListener('click', (event) => { 
+        endToggle(scoreToggle);
+
         game.click(event); 
         updateActiveTurn();
 
         if ( game.isGameOver() ){
             updateWins(); 
-            announceWinner()
+            scoreToggle = announceWinner()
         }
-       //game.saveGame();
+       game.saveGame();
     });
-    //board.addEventListener('mouseover', (event) => { game.highlight(event);});
-    restartBtn.addEventListener('click', (event) => { game.restartGame(); /*game.saveGame();*/ });
-    resetScoresBtn.addEventListener('click', (event) => { game.resetScores(); updateWins(); /*game.saveGame();*/ });
+    restartBtn.addEventListener('click', (event) => { game.restartGame();
+         game.saveGame();
+        });
+    resetScoresBtn.addEventListener('click', (event) => { game.resetScores(); updateWins();
+         game.saveGame();});
 
 }
 //initialize game
 init();
 
-var sheet = document.styleSheets[0];
-
-//sheet.cssRules[11].style.backgroundColor = 'rgba(0, 0, 255, 0.3)' );
-
-
-
-
-
-
-
-
 function announceWinner(){
-    msg = `${game.getWinner()} wins!`;
-    if (game.getWinner() == 'Tie'){
-        msg = 'Tie Game!'
+    let node;
+    let originalClass;
+    node = document.querySelector(`.${game.getWinner()}`)
+
+    return setInterval( function(){
+        toggle(node, game.getWinner());
+    }, 700)
+    
+}
+
+function toggle(playerScore, originalClass){
+    if ( playerScore.className === 'score winner' ){
+        return playerScore.setAttribute('class', `score ${originalClass}`);
     }
-    document.querySelector('#announcer').innerHTML = msg;
+    return playerScore.setAttribute('class', `score winner`);
+
+
 }
 
 function updateWins(){
@@ -50,6 +56,23 @@ function updateWins(){
 }
 
 function updateActiveTurn(){
-    document.querySelector('#announcer').innerHTML = `${game.getTurn()}'s Turn`;
+    let scoreboard = document.querySelector('.scoreboard');
+    scoreboard.childNodes[1].id = "";
+    scoreboard.childNodes[3].id = "";
+
+    let node = document.querySelector(`.${game.getTurn()}`);
+
+    node.id = "turn";
+
+    
+
+    
 }
 
+function endToggle(scoreToggle){
+    clearInterval(scoreToggle);
+    let scoreboard = document.querySelector('.scoreboard');
+    scoreboard.childNodes[1].setAttribute('class', 'score X');
+    scoreboard.childNodes[3].setAttribute('class', 'score O');
+    
+}

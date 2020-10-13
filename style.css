@@ -69,10 +69,34 @@ aside {
     /* border: 5px solid black; */
 }
 
+.score {
+    margin: 20px;
+    width: 50px;
+    border-radius: 5px;
+    color: white;
+}
+
+.X {
+    background-color: red;
+}
+
+.O {
+    background-color: blue;
+}
+
+#turn {
+    box-shadow: 0px 0px 10px 7px rgba(0, 0, 0, 0.3);;
+}
+
+.winner{
+    background-color: none;
+    color: black;
+}
+
 
 #board {
     display: grid;
-    background-color: lightgoldenrodyellow;
+    background-color: rgba(218, 124, 36, 0);
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 3px;
     grid-auto-rows: 1fr; 
@@ -92,7 +116,7 @@ aside {
 }
 
 .empty{
-    background-color: rgba(224, 206, 165, 0.527);
+    background-color: rgba(224, 206, 165, 0.8);
 }
 
 .empty:hover{
@@ -128,8 +152,6 @@ h1 {
     width: 100px;
     text-align: center;
 }
-
-
 
 @media screen and (max-width: 800px){
 

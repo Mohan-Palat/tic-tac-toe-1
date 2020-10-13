@@ -155,6 +155,4 @@ class TicTacToe {
         return sheet.cssRules[index].style.backgroundColor = 'rgba(0, 0, 255, 0.3)' ;
     }
 
-
-
 };
