@@ -153,18 +153,10 @@ h1 {
     justify-content: space-around;
 }
 
-.X-space {
-    background-color: red;
-    height: 100px;
-    width: 100px;
-    text-align: center;
-}
+.scoreboard > div:hover {
+    opacity: 0.5;
 
-.O-space {
-    background-color: blue;
-    height: 100px;
-    width: 100px;
-    text-align: center;
+
 }
 
 .buttons {

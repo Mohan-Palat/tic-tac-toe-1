@@ -11,10 +11,18 @@ class TicTacToe {
             wins: {
                 X: 0,
                 O: 0
-            }
+            },
+            colors: {
+                X: '255, 0, 0',
+                O: '0, 0, 255'
+            },
         }
         this.restoreSaveState();
         this.toggleHover();
+                    //  RED, BLUE, GREEN, GOLD, PURPLE, ORANGE, HOTPINK
+        this.colors = [ '255, 0, 0', '0, 0, 255', '34, 139, 34', '255, 215, 0', '128, 0, 128', '255, 140, 0', '255, 105, 180' ];
+        this.setColorTile('X', this.vars.colors.X);
+        this.setColorTile('O', this.vars.colors.O);
 
     }
 
@@ -63,7 +71,7 @@ class TicTacToe {
         let player = this.getTurn();                                          //determine if turn is X or O
 
         event.target.innerHTML = player;                                      //apply X or O to selected space
-        event.target.setAttribute('class', `space ${player}-space`)
+        event.target.setAttribute('class', `space ${player}`)
 
         this.updateMoves(col, row, player);                                   //update arrays tracking win moves for the selected game space
 
@@ -151,8 +159,32 @@ class TicTacToe {
             return sheet.cssRules[index].style.backgroundColor = 'rgba(224, 206, 165, 0.8)';                //if game over, disable hover
         }
         if (turn == 'X')
-            return sheet.cssRules[index].style.backgroundColor = 'rgba(255, 0, 0, 0.3)' ;
-        return sheet.cssRules[index].style.backgroundColor = 'rgba(0, 0, 255, 0.3)' ;
+            return sheet.cssRules[index].style.backgroundColor = `rgba(${this.vars.colors.X}, 0.3)`;
+        return sheet.cssRules[index].style.backgroundColor = `rgba(${this.vars.colors.O}, 0.3)` ;
+    }
+
+    getColor(player){
+        return this.vars.colors[player];
+    }
+
+    changeColor(player, opponent){
+        const index = Math.floor(Math.random() * this.colors.length);
+
+        if ( this.getColor(opponent) == this.colors[index] || this.getColor(player) == this.colors[index] )
+            return this.changeColor(player, opponent);
+        
+        this.vars.colors[player] = this.colors[index];
+
+        return this.setColorTile(player, this.colors[index])
+
+    }
+
+    setColorTile(player, color){
+        const sheet = document.styleSheets[0];
+        if ( player == 'X' ){
+            return sheet.cssRules[11].style.backgroundColor = `rgb(${color})`;              
+        }
+        return sheet.cssRules[12].style.backgroundColor = `rgb(${color})`;       
     }
 
 };

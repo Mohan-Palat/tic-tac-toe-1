@@ -2,7 +2,8 @@ function init() {
 
     const board = document.querySelector('#board');
     const restartBtn = document.querySelector('#restart');
-    const resetScoresBtn = document.querySelector('#reset')
+    const resetScoresBtn = document.querySelector('#reset');
+    const scoreboard = document.querySelector('.scoreboard');
     const buttons = document.querySelector('.buttons');
     const debug = document.querySelector('footer');
     game = new TicTacToe(board);
@@ -43,10 +44,24 @@ function init() {
     });
 
     buttons.addEventListener('click', (event) => {
-        if (event.target.id == 'restart') { game.restartGame(); game.saveGame(); restartSound.play(); updateActiveTurn(); }
-        if (event.target.id == 'reset') { game.resetScores(); updateWins(); game.saveGame(); resetSound.play() }
+        if (event.target.id == 'restart') { endAnnounceWinner(scoreToggle); game.restartGame(); game.saveGame(); restartSound.play(); updateActiveTurn();  }
+        if (event.target.id == 'reset') { game.resetScores(); updateWins(); game.saveGame(); resetSound.play(); }
     });
     debug.addEventListener('click', debugSave);
+
+    scoreboard.addEventListener('click', (event) => {
+        if (event.target.classList.contains('X') || event.target.id == 'x-wins'){
+            game.changeColor('X', 'O');
+            resetSound.play();
+        }
+        if (event.target.classList.contains('O') || event.target.id == 'o-wins'){
+            game.changeColor('O', 'X');
+            resetSound.play();
+        }
+        game.toggleHover();
+        game.saveGame();
+
+    })
 
 }
 //initialize game
