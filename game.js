@@ -1,10 +1,12 @@
 class TicTacToe {
 
-    constructor(board){
+    constructor(board, version){
         this.board = board;
+        this.version = version;
         this.startingBoard = board.innerHTML;
         this.vars = {
             currentBoard: board.innerHTML,
+            saveVersion = version,
             moveCount: 1,
             winner: null,
             winStates: this.initializeWinStates(),
@@ -43,7 +45,7 @@ class TicTacToe {
 
     restoreSaveState(){                                                             //restore game session upon refresh
         let savedVars = localStorage.getItem('save');                   
-        if ( savedVars != null ){
+        if ( savedVars != null && savedVars.saveVersion != null && savedVars.saveVersion == this.version ){
             this.vars = JSON.parse(savedVars);
             this.board.innerHTML = this.vars.currentBoard;
         }
