@@ -7,7 +7,7 @@ This web application is a rendition of tic-tac-toe utilizing colored blocks to r
 
 <img src="/img/screenshot.png" width="500"/>
 
-My goal for the project was to be as intuitive as possible with gane feedback, relying on minimal language and opting instead for visual cues and sound effects to determine things such as game winner, whose turn it is, and game options. Careful consideration was placed in many of these design decisions, such as disabling the hover effect when one player was victorious, signaling that no further moves would be possible in the current game. 
+My goal for the project was to be as intuitive as possible with game feedback, relying minimally on language and opting instead for visual cues and sound effects to determine things such as game winner, whose turn it is, and game options. Careful consideration was placed in many of these design decisions, such as disabling the hover effect when one player was victorious, signaling that no further moves would be possible in the current game. 
 
 ## Features:
 - **Data Persistence:**  Upon closing the game or refreshing the page, it will resume in the exact position you left off.
