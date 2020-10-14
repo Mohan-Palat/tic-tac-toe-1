@@ -230,6 +230,11 @@ footer > a{
         width: 80px;
         font-size: 25px;
     }
+    .scoreboard > div:hover {
+        opacity: 1;
+    
+    
+    }
 
     
 

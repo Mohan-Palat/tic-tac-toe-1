@@ -6,7 +6,7 @@ function init() {
     const scoreboard = document.querySelector('.scoreboard');
     const buttons = document.querySelector('.buttons');
     const debug = document.querySelector('footer');
-    game = new TicTacToe(board, 1.0);
+    game = new TicTacToe(board, 1);
     let scoreToggle;
     const xMoveSound = new sound("./sounds/x-move.mp3");
     const oMoveSound = new sound("./sounds/o-move.mp3");

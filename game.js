@@ -44,10 +44,14 @@ class TicTacToe {
     }
 
     restoreSaveState(){                                                             //restore game session upon refresh
-        let savedVars = localStorage.getItem('save');                   
-        if ( savedVars != null && savedVars.saveVersion != null && savedVars.saveVersion == this.version ){
-            this.vars = JSON.parse(savedVars);
-            this.board.innerHTML = this.vars.currentBoard;
+        let savedVars = localStorage.getItem('save');   
+        if ( savedVars != null){
+            savedVars = JSON.parse(savedVars);
+            if (savedVars.saveVersion == this.version){
+                this.vars = savedVars;
+                this.board.innerHTML = this.vars.currentBoard;
+                
+            }
         }
 
     }
