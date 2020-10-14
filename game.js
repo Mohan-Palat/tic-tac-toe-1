@@ -6,7 +6,7 @@ class TicTacToe {
         this.startingBoard = board.innerHTML;
         this.vars = {
             currentBoard: board.innerHTML,
-            saveVersion = version,
+            saveVersion: version,
             moveCount: 1,
             winner: null,
             winStates: this.initializeWinStates(),
